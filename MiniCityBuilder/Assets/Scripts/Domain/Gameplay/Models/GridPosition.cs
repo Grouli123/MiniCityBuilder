@@ -1,4 +1,4 @@
-﻿namespace Domain.Application.Domain.Application.Models
+﻿namespace Domain.Gameplay.Models
 {
     /// <summary>Координата клетки сетки (целочисленная).</summary>
     public readonly struct GridPosition
