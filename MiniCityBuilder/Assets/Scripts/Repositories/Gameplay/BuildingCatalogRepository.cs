@@ -4,7 +4,7 @@ using Domain.Gameplay.Models;
 using Repositories.Gameplay.Configs;
 using UnityEngine;
 
-namespace Repositories.Gameplay
+namespace Repositories.Gameplay.Configs
 {
     /// <summary>
     /// Каталог типов зданий (ScriptableObject).

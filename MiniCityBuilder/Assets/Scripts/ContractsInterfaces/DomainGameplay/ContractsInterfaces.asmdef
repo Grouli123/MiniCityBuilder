@@ -1,0 +1,16 @@
+{
+    "name": "ContractsInterfaces",
+    "rootNamespace": "ContractsInterfaces",
+    "references": [
+        "GUID:071a00cb919cac54e8be0622866e297b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}
