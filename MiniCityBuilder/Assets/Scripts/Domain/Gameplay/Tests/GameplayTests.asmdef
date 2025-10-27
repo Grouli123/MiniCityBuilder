@@ -1,0 +1,21 @@
+{
+    "name": "GameplayTests",
+    "rootNamespace": "Tests.Gameplay",
+    "references": [
+        "GUID:50dbd475521e71e49abd80d457e7154a",
+        "GUID:071a00cb919cac54e8be0622866e297b",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

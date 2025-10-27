@@ -1,0 +1,21 @@
+{
+    "name": "InstallersGameplay",
+    "rootNamespace": "Installers.Gameplay",
+    "references": [
+        "GUID:ae1e383db9113dd4b84a98e754ec7897",
+        "GUID:53aaba736c151ff4a8036086efb55818",
+        "GUID:84a15d7d6f5cfa94caba2a0743852b67",
+        "GUID:1cb2505c03b1aa04c9aeb7354ed7149e",
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,22 @@
+{
+    "name": "PresentationGameplay",
+    "rootNamespace": "Presentation.Gameplay",
+    "references": [
+        "GUID:ae1e383db9113dd4b84a98e754ec7897",
+        "GUID:1cb2505c03b1aa04c9aeb7354ed7149e",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
