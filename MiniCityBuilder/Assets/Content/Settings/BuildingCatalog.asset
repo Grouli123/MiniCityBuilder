@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bad0120118443819e4b761b077cc46e, type: 3}
+  m_Name: BuildingCatalog
+  m_EditorClassIdentifier: 
+  entries:
+  - type: 1
+    placeCostGold: 50
+    levels:
+    - level: 1
+      upgradeCostGold: 100
+      incomePerTickGold: 2
+    - level: 2
+      upgradeCostGold: 150
+      incomePerTickGold: 4
+    viewPrefab: {fileID: 0}
+  - type: 2
+    placeCostGold: 60
+    levels:
+    - level: 1
+      upgradeCostGold: 120
+      incomePerTickGold: 3
+    - level: 2
+      upgradeCostGold: 180
+      incomePerTickGold: 6
+    viewPrefab: {fileID: 0}
+  - type: 3
+    placeCostGold: 80
+    levels:
+    - level: 1
+      upgradeCostGold: 150
+      incomePerTickGold: 5
+    - level: 2
+      upgradeCostGold: 200
+      incomePerTickGold: 10
+    viewPrefab: {fileID: 0}

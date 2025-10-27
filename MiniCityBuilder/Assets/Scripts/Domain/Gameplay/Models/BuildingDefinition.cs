@@ -14,7 +14,6 @@ namespace Domain.Gameplay.Models
         {
             Type = type;
             PlaceCostGold = placeCostGold;
-            // фиксируем как ReadOnlyCollection, чтобы защитить от мутаций извне
             Levels = levels is ReadOnlyCollection<BuildingLevelInfo> ro ? ro : new ReadOnlyCollection<BuildingLevelInfo>(new List<BuildingLevelInfo>(levels));
         }
     }
