@@ -1,6 +1,6 @@
 ﻿using Domain.Gameplay.Models;
-using Infrastructure.Grid;
 using Infrastructure.Input;
+using Presentation.Gameplay.Adapters;
 using Presentation.Gameplay.Views;
 using UnityEngine;
 using VContainer;
@@ -8,48 +8,46 @@ using VContainer.Unity;
 
 namespace Presentation.Gameplay.Presenters
 {
-    /// <summary>Презентер подсветки клетки под курсором.</summary>
     public sealed class GridHoverPresenter : IPostStartable, ITickable
     {
-        private readonly CityGrid grid;
-        private readonly GridWorldConverter converter;
-        private readonly PlacementInputAdapter input;
-        private readonly GridHighlightView highlight;
-        private readonly Plane groundPlane;
-        private readonly Vector3 cellSizeVec;
+        private readonly CityGrid _grid;
+        private readonly UnityGridWorldAdapter _converter;
+        private readonly PlacementInputAdapter _input;
+        private readonly GridHighlightView _highlight;
+        private readonly Plane _groundPlane;
+        private readonly Vector3 _cellSizeVec;
 
         [Inject]
         public GridHoverPresenter(
             CityGrid grid,
-            GridWorldConverter converter,
+            UnityGridWorldAdapter converter,
             PlacementInputAdapter input,
             GridHighlightView highlight)
         {
-            this.grid = grid;
-            this.converter = converter;
-            this.input = input;
-            this.highlight = highlight;
+            _grid = grid;
+            _converter = converter;
+            _input = input;
+            _highlight = highlight;
 
-            groundPlane = new Plane(Vector3.up, Vector3.zero);
-            cellSizeVec = new Vector3(grid.CellSize, 0f, grid.CellSize);
+            _groundPlane = new Plane(Vector3.up, Vector3.zero);
+            _cellSizeVec = new Vector3(_converter.CellSize, 0f, _converter.CellSize);
         }
 
         public void PostStart() { }
 
         public void Tick()
         {
-            if (!input.TryGetMouseRay(out var ray)) return;
-            if (!groundPlane.Raycast(ray, out var dist)) return;
+            if (!_input.TryGetMouseRay(out var ray)) return;
+            if (!_groundPlane.Raycast(ray, out var dist)) return;
 
             var hit = ray.GetPoint(dist);
+            var cell = _converter.ToCell(hit);
 
-            var cell = converter.ToCell(hit);
+            var worldCenter = _converter.ToWorldCenter(cell);
+            var allowed = _grid.IsInside(cell) && _grid.IsFree(cell); // или IsOccupied==false
 
-            var worldCenter = converter.ToWorldCenter(cell);
-            var allowed = grid.IsInside(cell) && !grid.IsOccupied(cell);
-
-            highlight.SetWorldTransform(worldCenter, cellSizeVec, 0.01f);
-            highlight.SetAllowed(allowed);
+            _highlight.SetWorldTransform(worldCenter, _cellSizeVec, 0.01f);
+            _highlight.SetAllowed(allowed);
         }
     }
 }

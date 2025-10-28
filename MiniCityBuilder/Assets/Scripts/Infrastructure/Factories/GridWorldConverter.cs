@@ -1,35 +1,39 @@
-﻿using Domain.Gameplay.Models;
+﻿using ContractsInterfaces.DomainGameplay;
+using Domain.Gameplay.Models;
 using UnityEngine;
 
 namespace Infrastructure.Grid
 {
-    /// <summary>
-    /// Конвертация координат между сеткой (GridPosition) и миром (Vector3) на плоскости Y=0.
-    /// </summary>
-    public sealed class GridWorldConverter
+    /// <summary>Конвертация Grid <-> World (Y=0). Реализация порта без утечки в Domain.</summary>
+    public sealed class GridWorldConverter : IGridWorldConverter
     {
-        private readonly CityGrid grid;
-        private readonly Vector3 origin;
+        private readonly CityGrid _grid;
+        private readonly Vector3 _origin;
 
         public GridWorldConverter(CityGrid grid, Vector3 origin)
         {
-            this.grid = grid;
-            this.origin = origin;
+            _grid   = grid;
+            _origin = origin;
         }
 
-        public Vector3 ToWorldCenter(in GridPosition cell)
+        // реализация порта (без Vector3 наружу)
+        public float[] ToWorldCenter(GridPosition cell)
         {
-            var s = grid.CellSize;
-            return new Vector3((cell.X + 0.5f) * s, 0f, (cell.Y + 0.5f) * s) + origin;
+            var s = _grid.CellSize;
+            return new[] { (cell.X + 0.5f) * s + _origin.x, (cell.Y + 0.5f) * s + _origin.z };
         }
 
-        public GridPosition ToCell(in Vector3 world)
+        public GridPosition ToCell(float x, float z)
         {
-            var s = grid.CellSize;
-            var local = world - origin;
-            int x = Mathf.FloorToInt(local.x / s);
-            int y = Mathf.FloorToInt(local.z / s);
-            return new GridPosition(x, y);
+            var s = _grid.CellSize;
+            var lx = x - _origin.x;
+            var lz = z - _origin.z;
+            int cx = Mathf.FloorToInt(lx / s);
+            int cy = Mathf.FloorToInt(lz / s);
+            return new GridPosition(cx, cy);
         }
+
+        // утилита для инфраструктуры/инсталлеров, если нужна
+        public float CellSize => _grid.CellSize;
     }
 }
