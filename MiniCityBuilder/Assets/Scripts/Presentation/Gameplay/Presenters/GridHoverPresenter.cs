@@ -44,10 +44,19 @@ namespace Presentation.Gameplay.Presenters
             var cell = _converter.ToCell(hit);
 
             var worldCenter = _converter.ToWorldCenter(cell);
-            var allowed = _grid.IsInside(cell) && _grid.IsFree(cell); // или IsOccupied==false
-
+            var allowed = _grid.IsInside(cell) && _grid.IsFree(cell); 
+            
+            var idx = Mathf.Clamp(_input.SelectedTypeIndex, 0, 2);
+            var palette = new Color[]
+            {
+                new Color(0f, 1f, 0f, 0.35f), 
+                new Color(0f, 0.6f, 1f, 0.35f), 
+                new Color(1f, 0.6f, 0f, 0.35f)  
+            };
+            _highlight.SetTint(palette[idx]); 
             _highlight.SetWorldTransform(worldCenter, _cellSizeVec, 0.01f);
             _highlight.SetAllowed(allowed);
+
         }
     }
 }

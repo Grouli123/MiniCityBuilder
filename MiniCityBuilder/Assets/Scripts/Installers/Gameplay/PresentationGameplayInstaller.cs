@@ -1,23 +1,55 @@
-﻿using Presentation.Gameplay.Presenters;
+﻿using Domain.Gameplay.Models;
+using Infrastructure.Grid;
+using Infrastructure.Input;
+using Infrastructure.Factories;
 using Presentation.Gameplay.Views;
-using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using UnityEngine;
+using Repositories.Gameplay.Configs;
+using Presentation.Gameplay.Adapters;
 
 namespace Installers.Gameplay
 {
-    /// <summary>Инсталлер презентационного слоя геймплея.</summary>
     public sealed class PresentationGameplayInstaller : LifetimeScope
     {
-        [SerializeField] private GridHighlightView gridHighlightView;
-        [SerializeField] private Infrastructure.Input.PlacementInputAdapter inputAdapter;
+        [Header("Grid")]
+        [SerializeField] int width = 32;
+        [SerializeField] int height = 32;
+        [SerializeField] float cellSize = 1f;
+        [SerializeField] Vector3 gridOrigin = Vector3.zero;
+
+        [Header("Scene References")]
+        [SerializeField] PlacementInputAdapter inputAdapter;
+        [SerializeField] GridHighlightView gridHighlightView;
+        [SerializeField] BuildingGhostView buildingGhostView;
+
+        [Header("Factory")]
+        [SerializeField] BuildingCatalogRepository buildingCatalog; 
+        [SerializeField] Transform buildingsRoot;
+        
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterInstance(gridHighlightView);
-            builder.RegisterInstance(inputAdapter);
+            var grid = new CityGrid(width, height, cellSize);
+            builder.RegisterInstance(grid);
 
-            builder.Register<GridHoverPresenter>(Lifetime.Singleton);
+            var converter = new GridWorldConverter(grid, gridOrigin);
+            builder.RegisterInstance(converter);
+
+            var adapterRepo = new BuildingCatalogRepositoryAdapter(buildingCatalog);
+            builder.RegisterInstance(adapterRepo).AsSelf();
+            builder.RegisterInstance(buildingsRoot);
+            builder.Register<BuildingFactory>(Lifetime.Singleton);
+
+            builder.RegisterInstance(new UnityGridWorldAdapter(converter, cellSize));
+
+            builder.RegisterComponent(inputAdapter);
+            builder.RegisterComponent(gridHighlightView);
+            builder.RegisterComponent(buildingGhostView);
+
+            builder.RegisterEntryPoint<Presentation.Gameplay.Presenters.GridHoverPresenter>();
+            builder.RegisterEntryPoint<Presentation.Gameplay.Presenters.PlacementPresenter>();
         }
     }
 }

@@ -38,5 +38,8 @@ namespace Infrastructure.Factories
             prefab = null!;
             return false;
         }
+        
+        public bool TryGetTypeByIndex(int index, out BuildingType type) =>
+            _asset.TryGetTypeByIndex(index, out type);
     }
 }

@@ -15,7 +15,7 @@ namespace Repositories.Gameplay.Configs
     {
         [Header("Catalog")]
         [SerializeField] private List<BuildingCatalogEntry> entries = new();
-
+        public IReadOnlyList<BuildingCatalogEntry> Entries => entries;
         /// <summary>Возвращает доменную дефиницию и префаб визуала.</summary>
         public bool TryGet(BuildingType type, out BuildingDefinition def, out GameObject prefab)
         {
@@ -32,6 +32,17 @@ namespace Repositories.Gameplay.Configs
             def = new BuildingDefinition(e.type, e.placeCostGold, levels);
             prefab = e.viewPrefab;
             return true;
+        }
+        
+        public bool TryGetTypeByIndex(int index, out BuildingType type)
+        {
+            if (index >= 0 && index < entries.Count)
+            {
+                type = entries[index].type;
+                return true;
+            }
+            type = default;
+            return false;
         }
     }
 }

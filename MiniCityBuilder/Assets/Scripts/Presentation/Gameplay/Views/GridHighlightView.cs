@@ -31,6 +31,12 @@ namespace Presentation.Gameplay.Views
             if (_instanceMat == null) return;
             _instanceMat.color = allowed ? okColor : badColor;
         }
+        
+        public void SetTint(Color c)
+        {
+            if (_instanceMat == null) return;
+            _instanceMat.color = c;
+        }
 
         private void OnDestroy()
         {
