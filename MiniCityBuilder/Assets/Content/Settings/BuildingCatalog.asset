@@ -22,7 +22,7 @@ MonoBehaviour:
     - level: 2
       upgradeCostGold: 150
       incomePerTickGold: 4
-    viewPrefab: {fileID: 0}
+    viewPrefab: {fileID: 7680569006466884333, guid: dc2d8771e30f0074ca052f92aece6214, type: 3}
   - type: 2
     placeCostGold: 60
     levels:
@@ -32,7 +32,7 @@ MonoBehaviour:
     - level: 2
       upgradeCostGold: 180
       incomePerTickGold: 6
-    viewPrefab: {fileID: 0}
+    viewPrefab: {fileID: 913753819915795481, guid: 7365bb671d36c1248b5a20f5609dc3bd, type: 3}
   - type: 3
     placeCostGold: 80
     levels:
@@ -42,4 +42,4 @@ MonoBehaviour:
     - level: 2
       upgradeCostGold: 200
       incomePerTickGold: 10
-    viewPrefab: {fileID: 0}
+    viewPrefab: {fileID: 5762122733720720395, guid: e5df440a96e3cbb44bd67e9ec3b44b58, type: 3}
