@@ -7,18 +7,22 @@ namespace Domain.Gameplay.Models
     {
         public int Width { get; }
         public int Height { get; }
+        public float CellSize { get; }
 
         private readonly HashSet<GridPosition> _occupied = new();
         private readonly Dictionary<int, BuildingInstance> _byId = new();
 
-        public CityGrid(int width, int height)
+        public CityGrid(int width, int height, float cellSize = 1f)
         {
             Width = width;
             Height = height;
+            CellSize = cellSize <= 0f ? 1f : cellSize;
         }
 
         public bool IsInside(GridPosition p) => p.X >= 0 && p.Y >= 0 && p.X < Width && p.Y < Height;
+        public bool InBounds(GridPosition p) => IsInside(p);
         public bool IsFree(GridPosition p) => !_occupied.Contains(p);
+        public bool IsOccupied(GridPosition p) => _occupied.Contains(p);
 
         public IReadOnlyDictionary<int, BuildingInstance> All => _byId;
 
@@ -47,6 +51,13 @@ namespace Domain.Gameplay.Models
             if (!_byId.TryGetValue(id, out var inst)) return false;
             _occupied.Remove(inst.Position);
             return _byId.Remove(id);
+        }
+
+        public bool TryFree(GridPosition p)
+        {
+            if (!_occupied.Contains(p)) return false;
+            _occupied.Remove(p);
+            return true;
         }
 
         public BuildingInstance? Get(int id) => _byId.TryGetValue(id, out var v) ? v : null;
