@@ -1,6 +1,4 @@
-﻿using Domain.Gameplay.Models;
-
-namespace Application.Services
+﻿namespace Application.Services
 {
     public interface IBuildingUpgradeService
     {

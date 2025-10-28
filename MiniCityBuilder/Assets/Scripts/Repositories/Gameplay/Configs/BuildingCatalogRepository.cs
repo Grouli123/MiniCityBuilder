@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Domain.Gameplay.Models;
-using Repositories.Gameplay.Configs;
 using UnityEngine;
 
 namespace Repositories.Gameplay.Configs
@@ -16,7 +15,7 @@ namespace Repositories.Gameplay.Configs
         [Header("Catalog")]
         [SerializeField] private List<BuildingCatalogEntry> entries = new();
         public IReadOnlyList<BuildingCatalogEntry> Entries => entries;
-        /// <summary>Возвращает доменную дефиницию и префаб визуала.</summary>
+        
         public bool TryGet(BuildingType type, out BuildingDefinition def, out GameObject prefab)
         {
             var e = entries.FirstOrDefault(x => x.type == type);

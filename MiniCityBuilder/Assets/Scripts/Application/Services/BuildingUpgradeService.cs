@@ -1,14 +1,13 @@
 ﻿using Domain.Gameplay.Models;
 using ContractsInterfaces.DomainGameplay;
-using System;
 
 namespace Application.Services
 {
     public sealed class BuildingUpgradeService : IBuildingUpgradeService
     {
-        readonly CityGrid grid;
-        readonly IBuildingCatalog catalog;
-        readonly IWalletService wallet;
+        private readonly CityGrid grid;
+        private readonly IBuildingCatalog catalog;
+        private readonly IWalletService wallet;
 
         public BuildingUpgradeService(CityGrid grid, IBuildingCatalog catalog, IWalletService wallet)
         {

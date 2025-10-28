@@ -25,7 +25,7 @@ namespace Application.Services
             return true;
         }
 
-        void Set(int value)
+        private void Set(int value)
         {
             Balance = Math.Max(0, value);
             OnBalanceChanged?.Invoke(Balance);

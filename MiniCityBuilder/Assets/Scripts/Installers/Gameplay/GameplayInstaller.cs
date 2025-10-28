@@ -1,12 +1,11 @@
-﻿using ContractsInterfaces.DomainGameplay;
-using Domain.Gameplay.Models;
+﻿using Domain.Gameplay.Models;
 using Infrastructure.Grid;
 using Infrastructure.Input;
 using Presentation.Gameplay.Adapters;
 using Presentation.Gameplay.Views;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using UnityEngine;
 
 namespace Installers.Gameplay
 {
@@ -24,22 +23,17 @@ namespace Installers.Gameplay
 
         protected override void Configure(IContainerBuilder builder)
         {
-            // Domain model
             var grid = new CityGrid(width, height, cellSize);
             builder.RegisterInstance(grid);
 
-            // Port + implementation (Infrastructure)
-            var impl = new GridWorldConverter(grid, gridOrigin);
-            builder.RegisterInstance<IGridWorldConverter>(impl);
+            var converter = new GridWorldConverter(grid, gridOrigin);
+            builder.RegisterInstance(converter);
 
-            // Adapter for Presentation
-            builder.RegisterInstance(new UnityGridWorldAdapter(impl, cellSize));
+            builder.RegisterInstance(new UnityGridWorldAdapter(converter, cellSize));
 
-            // Scene components
             builder.RegisterComponent(inputAdapter);
             builder.RegisterComponent(gridHighlightView);
 
-            // Presenter entrypoint
             builder.RegisterEntryPoint<Presentation.Gameplay.Presenters.GridHoverPresenter>();
         }
     }

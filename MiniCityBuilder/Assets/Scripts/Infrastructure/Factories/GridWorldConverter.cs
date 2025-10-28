@@ -1,39 +1,33 @@
-﻿using ContractsInterfaces.DomainGameplay;
+﻿using UnityEngine;
 using Domain.Gameplay.Models;
-using UnityEngine;
 
 namespace Infrastructure.Grid
 {
-    /// <summary>Конвертация Grid <-> World (Y=0). Реализация порта без утечки в Domain.</summary>
-    public sealed class GridWorldConverter : IGridWorldConverter
+    public sealed class GridWorldConverter
     {
-        private readonly CityGrid _grid;
-        private readonly Vector3 _origin;
+        private readonly CityGrid grid;
+        private readonly Vector3 origin;
 
         public GridWorldConverter(CityGrid grid, Vector3 origin)
         {
-            _grid   = grid;
-            _origin = origin;
+            this.grid = grid;
+            this.origin = origin;
         }
 
-        // реализация порта (без Vector3 наружу)
-        public float[] ToWorldCenter(GridPosition cell)
+        public Vector3 ToWorldCenter(GridPosition cell)
         {
-            var s = _grid.CellSize;
-            return new[] { (cell.X + 0.5f) * s + _origin.x, (cell.Y + 0.5f) * s + _origin.z };
+            float x = origin.x + cell.X * grid.CellSize + grid.CellSize / 2f;
+            float z = origin.z + cell.Y * grid.CellSize + grid.CellSize / 2f;
+            return new Vector3(x, origin.y, z);
         }
 
-        public GridPosition ToCell(float x, float z)
+        public GridPosition ToCell(Vector3 world)
         {
-            var s = _grid.CellSize;
-            var lx = x - _origin.x;
-            var lz = z - _origin.z;
-            int cx = Mathf.FloorToInt(lx / s);
-            int cy = Mathf.FloorToInt(lz / s);
-            return new GridPosition(cx, cy);
+            int x = Mathf.FloorToInt((world.x - origin.x) / grid.CellSize);
+            int y = Mathf.FloorToInt((world.z - origin.z) / grid.CellSize);
+            return new GridPosition(x, y);
         }
 
-        // утилита для инфраструктуры/инсталлеров, если нужна
-        public float CellSize => _grid.CellSize;
+        public Vector3 Origin => origin;
     }
 }

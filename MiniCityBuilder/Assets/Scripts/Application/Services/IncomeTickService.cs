@@ -1,14 +1,13 @@
 ﻿using Domain.Gameplay.Models;
-using UnityEngine;
 
 namespace Application.Services
 {
     public sealed class IncomeTickService
     {
-        readonly CityGrid _grid;
-        readonly IWalletService _wallet;
-        readonly float _interval;
-        float _timer;
+        private readonly CityGrid _grid;
+        private readonly IWalletService _wallet;
+        private readonly float _interval;
+        private float _timer;
 
         public IncomeTickService(CityGrid grid, IWalletService wallet, float interval = 5f)
         {

@@ -14,7 +14,6 @@
             IncomePerTickGold = incomePerTickGold;
         }
 
-        /// <summary>Удобный With для копирования с изменением.</summary>
         public BuildingLevelInfo With(int? level = null, int? upgradeCostGold = null, int? incomePerTickGold = null)
             => new BuildingLevelInfo(
                 level ?? Level,

@@ -1,5 +1,5 @@
 ﻿using Application.Services;
-using ContractsInterfaces.DomainGameplay;
+using ContractsInterfaces.DomainGameplay;      
 using Domain.Gameplay.Models;
 using Infrastructure.Factories;
 using Infrastructure.Grid;
@@ -18,21 +18,21 @@ namespace Installers.Gameplay
     public sealed class PresentationGameplayInstaller : LifetimeScope
     {
         [Header("Grid")]
-        [SerializeField] int width = 32;
-        [SerializeField] int height = 32;
-        [SerializeField] float cellSize = 1f;
-        [SerializeField] Vector3 gridOrigin = Vector3.zero;
-        [SerializeField] float incomeIntervalSeconds = 5f;
+        [SerializeField] private int width = 32;
+        [SerializeField] private int height = 32;
+        [SerializeField] private float cellSize = 1f;
+        [SerializeField] private Vector3 gridOrigin = Vector3.zero;
+        [SerializeField] private float incomeIntervalSeconds = 5f;
 
         [Header("Scene References")]
-        [SerializeField] PlacementInputAdapter inputAdapter;
-        [SerializeField] GridHighlightView gridHighlightView;
-        [SerializeField] BuildingGhostView buildingGhostView;
-        [SerializeField] WalletHUDView walletHudView;
+        [SerializeField] private PlacementInputAdapter inputAdapter;
+        [SerializeField] private GridHighlightView gridHighlightView;
+        [SerializeField] private BuildingGhostView buildingGhostView;
+        [SerializeField] private WalletHUDView walletHudView;
 
         [Header("Factory")]
-        [SerializeField] BuildingCatalogRepository buildingCatalog;
-        [SerializeField] Transform buildingsRoot;
+        [SerializeField] private BuildingCatalogRepository buildingCatalog;
+        [SerializeField] private Transform buildingsRoot;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -41,17 +41,17 @@ namespace Installers.Gameplay
 
             var converter = new GridWorldConverter(grid, gridOrigin);
             builder.RegisterInstance(converter);
-
             builder.RegisterInstance(new UnityGridWorldAdapter(converter, cellSize));
 
-            var adapterRepo = new BuildingCatalogRepositoryAdapter(buildingCatalog);
-            builder.RegisterInstance(adapterRepo).As<IBuildingCatalog>().AsSelf();
+            var catalogAdapter = new BuildingCatalogRepositoryAdapter(buildingCatalog);
+            builder.RegisterInstance(catalogAdapter)
+                   .As<IBuildingCatalog>()
+                   .AsSelf();
 
             builder.RegisterInstance(buildingsRoot);
             builder.Register<BuildingFactory>(Lifetime.Singleton);
 
             builder.Register<IWalletService>(_ => new WalletService(500), Lifetime.Singleton);
-
             builder.Register<IncomeTickService>(Lifetime.Singleton)
                    .WithParameter<float>(incomeIntervalSeconds);
             builder.RegisterEntryPoint<IncomeTickRunner>();

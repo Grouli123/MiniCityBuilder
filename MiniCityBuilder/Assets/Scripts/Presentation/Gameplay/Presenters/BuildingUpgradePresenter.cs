@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Application.Services;
-using Domain.Gameplay.Models;
+﻿using Application.Services;
 using Infrastructure.Input;
 using Presentation.Gameplay.Views;
 using UnityEngine;
