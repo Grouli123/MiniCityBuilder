@@ -8,6 +8,8 @@ using VContainer.Unity;
 using UnityEngine;
 using Repositories.Gameplay.Configs;
 using Presentation.Gameplay.Adapters;
+using Application.Services;
+using ContractsInterfaces.DomainGameplay; 
 
 namespace Installers.Gameplay
 {
@@ -28,7 +30,6 @@ namespace Installers.Gameplay
         [SerializeField] BuildingCatalogRepository buildingCatalog; 
         [SerializeField] Transform buildingsRoot;
         
-
         protected override void Configure(IContainerBuilder builder)
         {
             var grid = new CityGrid(width, height, cellSize);
@@ -36,20 +37,26 @@ namespace Installers.Gameplay
 
             var converter = new GridWorldConverter(grid, gridOrigin);
             builder.RegisterInstance(converter);
+            builder.RegisterInstance(new UnityGridWorldAdapter(converter, cellSize));
 
             var adapterRepo = new BuildingCatalogRepositoryAdapter(buildingCatalog);
-            builder.RegisterInstance(adapterRepo).AsSelf();
+            builder.RegisterInstance(adapterRepo)
+                .As<IBuildingCatalog>()
+                .AsSelf();
+
             builder.RegisterInstance(buildingsRoot);
             builder.Register<BuildingFactory>(Lifetime.Singleton);
-
-            builder.RegisterInstance(new UnityGridWorldAdapter(converter, cellSize));
 
             builder.RegisterComponent(inputAdapter);
             builder.RegisterComponent(gridHighlightView);
             builder.RegisterComponent(buildingGhostView);
 
+            builder.Register<BuildingUpgradeService>(Lifetime.Singleton)
+                .As<IBuildingUpgradeService>();
+
             builder.RegisterEntryPoint<Presentation.Gameplay.Presenters.GridHoverPresenter>();
             builder.RegisterEntryPoint<Presentation.Gameplay.Presenters.PlacementPresenter>();
+            builder.RegisterEntryPoint<Presentation.Gameplay.Presenters.BuildingUpgradePresenter>();
         }
     }
 }

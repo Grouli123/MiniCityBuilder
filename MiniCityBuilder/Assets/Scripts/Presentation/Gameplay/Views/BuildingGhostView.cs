@@ -30,7 +30,7 @@ namespace Presentation.Gameplay.Views
         {
             if (_instMat != null)
             {
-                if (Application.isPlaying) Destroy(_instMat);
+                if (UnityEngine.Application.isPlaying) Destroy(_instMat);
                 else DestroyImmediate(_instMat);
             }
         }

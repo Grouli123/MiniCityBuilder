@@ -57,12 +57,20 @@ namespace Presentation.Gameplay.Presenters
 
             if (input.LeftClickDown && grid.IsInside(cell) && !grid.IsOccupied(cell))
             {
-                var pos = converter.ToWorldCenter(cell);     
-                factory.Create(currentType, pos, Quaternion.identity);
+                var pos = converter.ToWorldCenter(cell);
+                var go  = factory.Create(currentType, pos, Quaternion.identity);
 
                 var id = grid.All.Count + 1;
                 var instance = new BuildingInstance(id, currentType, new GridPosition(cell.X, cell.Y), 1);
-                grid.TryPlace(instance);
+                if (grid.TryPlace(instance))
+                {
+                    var view = go.GetComponent<Presentation.Gameplay.Views.BuildingView>();
+                    if (view != null)
+                    {
+                        view.BindInstanceId(id);
+                        view.ApplyLevel(instance.Level);
+                    }
+                }
             }
         }
 
