@@ -1,7 +1,8 @@
-﻿using Domain.Gameplay.Models;
-using Infrastructure.Input;
+﻿using Application.Services;
+using Domain.Gameplay.Models;
 using Infrastructure.Factories;
-using Presentation.Gameplay.Adapters;   
+using Infrastructure.Input;
+using Presentation.Gameplay.Adapters;
 using Presentation.Gameplay.Views;
 using UnityEngine;
 using VContainer;
@@ -9,15 +10,20 @@ using VContainer.Unity;
 
 namespace Presentation.Gameplay.Presenters
 {
-    /// <summary>Следит за выбранным типом, обновляет ghost и ставит здание по клику.</summary>
+    /// <summary>
+    /// Следит за выбранным типом, обновляет ghost и ставит здание по клику.
+    /// Списывает золото за постройку.
+    /// </summary>
     public sealed class PlacementPresenter : IPostStartable, ITickable
     {
         readonly CityGrid grid;
-        readonly UnityGridWorldAdapter converter;   
+        readonly UnityGridWorldAdapter converter;
         readonly PlacementInputAdapter input;
-        readonly BuildingCatalogRepositoryAdapter catalog;    
+        readonly BuildingCatalogRepositoryAdapter catalog;
         readonly BuildingFactory factory;
         readonly BuildingGhostView ghost;
+        readonly IWalletService wallet;
+        readonly GridHighlightView highlight; 
 
         BuildingType currentType;
         int lastIndex = -1;
@@ -29,7 +35,10 @@ namespace Presentation.Gameplay.Presenters
             PlacementInputAdapter input,
             BuildingCatalogRepositoryAdapter catalog,
             BuildingFactory factory,
-            BuildingGhostView ghost)
+            BuildingGhostView ghost,
+            IWalletService wallet,
+            GridHighlightView highlight 
+        )
         {
             this.grid      = grid;
             this.converter = converter;
@@ -37,6 +46,8 @@ namespace Presentation.Gameplay.Presenters
             this.catalog   = catalog;
             this.factory   = factory;
             this.ghost     = ghost;
+            this.wallet    = wallet;
+            this.highlight = highlight;
         }
 
         public void PostStart() => UpdateGhostByIndex(force: true);
@@ -51,30 +62,49 @@ namespace Presentation.Gameplay.Presenters
             if (!plane.Raycast(ray, out var d)) return;
 
             var hit  = ray.GetPoint(d);
-            var cell = converter.ToCell(hit);                
+            var cell = converter.ToCell(hit);
 
             ghost.SetWorldCenter(converter.ToWorldCenter(cell));
 
-            if (input.LeftClickDown && grid.IsInside(cell) && !grid.IsOccupied(cell))
-            {
-                var pos = converter.ToWorldCenter(cell);
-                var go  = factory.Create(currentType, pos, Quaternion.identity);
+            var insideAndFree = grid.IsInside(cell) && !grid.IsOccupied(cell);
 
-                var id = grid.All.Count + 1;
-                var instance = new BuildingInstance(id, currentType, new GridPosition(cell.X, cell.Y), 1);
-                if (grid.TryPlace(instance))
+            bool canAfford = true;
+            if (catalog.TryGetDefinition(currentType, out var def))
+            {
+                var placeCost = def.PlaceCostGold;
+                canAfford = wallet.Balance >= placeCost;
+            }
+
+            highlight.SetAllowed(insideAndFree && canAfford);
+
+            if (!input.LeftClickDown) return;
+            if (!insideAndFree) return;
+            if (!catalog.TryGetDefinition(currentType, out var definition)) return;
+
+            var cost = definition.PlaceCostGold;
+            if (!wallet.TrySpend(cost))
+            {
+                highlight.SetAllowed(false);
+                return;
+            }
+
+            var pos = converter.ToWorldCenter(cell);
+            var go  = factory.Create(currentType, pos, Quaternion.identity);
+
+            var id = grid.All.Count + 1;
+            var instance = new BuildingInstance(id, currentType, new GridPosition(cell.X, cell.Y), rotation90: 0, level: 1);
+            if (grid.TryPlace(instance))
+            {
+                var view = go.GetComponent<BuildingView>();
+                if (view != null)
                 {
-                    var view = go.GetComponent<Presentation.Gameplay.Views.BuildingView>();
-                    if (view != null)
-                    {
-                        view.BindInstanceId(id);
-                        view.ApplyLevel(instance.Level);
-                    }
+                    view.BindInstanceId(id);
+                    view.ApplyLevel(instance.Level);
                 }
             }
         }
 
-        private void UpdateGhostByIndex(bool force = false)
+        void UpdateGhostByIndex(bool force = false)
         {
             var idx = input.SelectedTypeIndex;
             if (!force && idx == lastIndex) return;

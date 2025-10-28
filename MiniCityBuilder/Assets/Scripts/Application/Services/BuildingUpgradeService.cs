@@ -1,18 +1,20 @@
 ﻿using Domain.Gameplay.Models;
-using ContractsInterfaces.DomainGameplay;   
+using ContractsInterfaces.DomainGameplay;
+using System;
 
 namespace Application.Services
 {
-    /// <summary>Простая логика апгрейда: без экономики, только проверка максимального уровня.</summary>
     public sealed class BuildingUpgradeService : IBuildingUpgradeService
     {
-        private readonly CityGrid grid;
-        private readonly IBuildingCatalog catalog;   // <-- порт, не адаптер
+        readonly CityGrid grid;
+        readonly IBuildingCatalog catalog;
+        readonly IWalletService wallet;
 
-        public BuildingUpgradeService(CityGrid grid, IBuildingCatalog catalog)
+        public BuildingUpgradeService(CityGrid grid, IBuildingCatalog catalog, IWalletService wallet)
         {
             this.grid = grid;
             this.catalog = catalog;
+            this.wallet = wallet;
         }
 
         public bool TryUpgrade(int buildingId, out int newLevel)
@@ -23,9 +25,12 @@ namespace Application.Services
             if (inst == null) return false;
 
             if (!catalog.TryGetDefinition(inst.Type, out var def)) return false;
-            var maxLvl = def.Levels.Count;
 
-            if (inst.Level >= maxLvl) return false;
+            var currentLevel = inst.Level;
+            if (currentLevel >= def.Levels.Count) return false;
+
+            var upgradeCost = def.Levels[currentLevel].UpgradeCostGold;
+            if (!wallet.TrySpend(upgradeCost)) return false;
 
             inst.Upgrade();
             newLevel = inst.Level;
